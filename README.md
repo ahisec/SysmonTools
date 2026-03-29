@@ -1,6 +1,6 @@
-# Sysmon Tools 🛡️
+# Sysmon Tools
 
-[![License](https://img.shields.io/badge/license-BSD-blue.svg)](LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 ![GitHub last commit](https://img.shields.io/github/last-commit/nshalabi/SysmonTools)
 ![GitHub stars](https://img.shields.io/github/stars/nshalabi/SysmonTools?style=social)
 
@@ -8,148 +8,177 @@ A collection of utilities for analyzing, visualizing, and managing **Microsoft S
 
 ---
 
-## ✨ GUI and Visulaization Utilities for Sysmon
+## What's New in v2.0
 
-- **Sysmon View** – offline Sysmon log visualization with multiple views, SQLite backend and VirusTotal integration.
-- **Sysmon Shell** – GUI configuration editor with bundled templates, export/import options, and XML apply support.
-- **Sysmon Box** – command-line utility to capture and correlate Sysmon + network events using `tshark`.
+Sysmon View has been **rewritten from the ground up** as a fully open-source desktop application — a long-requested change by the community. Built with **Electron + React + TypeScript**, the entire codebase is now open and free of commercial dependencies.
+
+**Key improvements:**
+
+- Modern dark-themed UI with a streamlined analyst workflow
+- Interactive session diagrams with freedom to move and arrange nodes
+- **Collapsible nodes** — collapse/expand sections of the event chain for focused analysis
+- **Event type filtering** — show/hide specific event types for a zoomed-in view of what matters
+- **Pin mode** — pin events of interest and filter to show only pinned events with configurable context range
+- **Performance optimization** — server-side pagination for large datasets, session threshold protection for diagram rendering
+- Hierarchical grouping in All Events — drag columns to group by machine, event type, session GUID, or any combination
+- Direct VirusTotal report links for hashes and IP addresses (no API key required for basic lookups)
+- GeoIP map view with multiple provider support
+- Cross-platform potential (Windows first, macOS/Linux possible)
 
 ---
 
-# 📑 Content
+## Content
 
-- [Release Notes](#release-notes)
 - [Sysmon View](#sysmon-view)
-- [Sysmon Shell](#sysmon-shell)
-- [Sysmon Box](#sysmon-box)
-- [Additional Resources](#additional-resources)
+- [Getting Started](#getting-started)
+- [Building from Source](#building-from-source)
+- [Legacy Tools](#legacy-tools)
+- [Third-Party Libraries](#third-party-libraries)
+- [Support the Project](#support-the-project)
 - [License](#license)
 - [Contact](#contact)
 
 ---
 
-# 📝 Release Notes
+## Sysmon View
 
-- **Sysmon View:** v3.1 – can import and correlate network trace captures with Sysmon network events.
-- **Sysmon Box:** v1.0 – new command-line utility to capture Sysmon and network events.
-- **Sysmon Shell:** added command to upgrade configuration files to Sysmon schema v9.0 (temporary solution).
+Sysmon View helps track and visualize Sysmon logs by logically grouping and correlating events. It uses executables, session GUIDs, event creation times, and more to organize data into multiple views.
+
+![Sysmon View](Assets/Images/SysmonView/1.png "Sysmon View - Process View")
+
+### Process View
+
+Summarizes run sessions per process GUID and shows correlated events in an interactive session diagram. Each node represents a Sysmon event, color-coded by type, displaying the field of interest (command lines, network connections, loaded images, registry keys, etc.).
+
+- **Collapsible nodes** — collapse/expand sections of the event chain to focus on what matters
+- **Event type filter** — show/hide specific event types (e.g., hide Image Loaded to focus on network events)
+- **Pin mode** — pin important nodes and filter to show only pinned events with configurable context range
+- **Session threshold** — sessions with over 2,000 events redirect to All Events for performance
+
+![Process View](Assets/Images/SysmonView/2.png "Process View - Session Diagram")
+![Process View](Assets/Images/SysmonView/3.png "Process View - Event Details")
+
+### Map View
+
+Geo-locates network destinations using configurable GeoIP providers and plots them on an interactive map. Click any marker to pivot into correlated events for that destination.
+
+![Map View](Assets/Images/SysmonView/4.png "Map View")
+
+### All Events View
+
+Full search through all collected data with server-side pagination for large datasets. Supports hierarchical grouping — drag column headers to the group zone to organize by machine, event type, session GUID, or any combination.
+
+![All Events View](Assets/Images/SysmonView/5.png "All Events View")
+
+### Event Details
+
+Double-click any event to open a detail panel showing all fields from the event-specific table. Includes direct links to VirusTotal reports for hashes (MD5, SHA1, SHA256) and IP addresses.
+
+![Event Details](Assets/Images/SysmonView/6.png "Event Detail Panel with VT Integration")
+
+### Additional Features
+
+- VirusTotal API integration for hash and IP lookups (requires API key for detailed results)
+- Direct VT report links (no API key required) for quick browser-based analysis
+- Export Sysmon XML logs from Windows Event Log and import into Sysmon View
+- SQLite database backend — portable, shareable, and queryable with any SQLite tool
 
 ---
 
-# 🔎 Sysmon View
+## Getting Started
 
-Sysmon View helps track and visualize Sysmon logs by logically grouping and correlating events.  
-It uses executables, session GUIDs, event creation times, and more to re-arrange data into multiple **views**.
+### Download
 
-![Sysmon View](Assets/Images/SysmonView/1.png "Sysmon View")
+Download the latest release from the [Releases](https://github.com/nshalabi/SysmonTools/releases) page:
 
-### Getting Started
+- **Installer** — `Sysmon View Setup x.x.x.exe` (recommended)
+- **Portable** — `SysmonView-x.x.x-portable.exe` (no installation required)
 
-Export Sysmon events to XML using `WEVTUtil` and import them into Sysmon View:
+### Export Sysmon Logs
+
+Export Sysmon events to XML using `WEVTUtil`:
 
 ```powershell
 WEVTUtil query-events "Microsoft-Windows-Sysmon/Operational" /format:xml /e:sysmonview > eventlog.xml
 ```
 
-- Data is stored in a SQLite database file (**SysmonViewDB**) alongside the executable.
-- The DB can be reused or shared; rename it to preserve prior imports.
-- The DB also supports direct queries via any SQLite management tool.
+### Import into Sysmon View
 
-### Sysmon Views
+1. Launch Sysmon View
+2. Go to **File > Import XML Logs** and select one or more exported XML files
+3. Events are parsed and stored in a local SQLite database
+4. Navigate between Process View, Map View, and All Events to analyze the data
 
-- **Process View** – summarizes run sessions (per process GUID) and shows correlated events in a timeline-like flow.
-- **Map View** – geo-locates network destinations (via [ipstack](https://ipstack.com)) and pivots into correlated events.
-- **All Events View** – full search through collected data, including standalone events (e.g., driver loads), supports grouping by machine, event type, or GUID.
-
-![Sysmon View](Assets/Images/SysmonView/2.png "Sysmon View")
-![Sysmon View](Assets/Images/SysmonView/3.png "Sysmon View")
-![Sysmon View](Assets/Images/SysmonView/4.png "Sysmon View")
-![Sysmon View](Assets/Images/SysmonView/5.png "Sysmon View")
-![Sysmon View](Assets/Images/SysmonView/6.png "Sysmon View")
-![Sysmon View](Assets/Images/SysmonView/7.png "Sysmon View")
-
-Additional features:
-
-- Double-click any event to access details (e.g., Process Creation, Event ID 1).
-- VirusTotal API integration for hash/IP lookups (requires API key).
-- Experimental Elasticsearch support for multi-machine imports.
+The database is stored under your user application data folder and can be shared or backed up.
 
 ---
 
-# ⚙️ Sysmon Shell
+## Building from Source
 
-Sysmon Shell provides a GUI to manage and apply Sysmon XML configurations.
+### Prerequisites
 
-![Sysmon Shell](Assets/Images/SysmonView/8.png "Sysmon Shell")
+- [Node.js](https://nodejs.org/) v18 or later
+- [Git](https://git-scm.com/)
 
-Features:
-
-- Load, edit, preview, and export Sysmon XML configuration files (all schemas supported).
-- Apply configs directly via `Sysmon.exe -c` (requires elevation).
-- Export Sysmon logs with options: export-only, export+clear, or export+backup.
-- Descriptions of all event types included (sourced from [Sysinternals Sysmon](https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon)).
-- Bundled with community-created configuration templates.
-
-![Sysmon Shell Templates](Assets/Images/SysmonView/9.png "Sysmon Shell Templates")
-
-⚠️ **Note:** Sysmon Shell does not validate include/exclude conflicts. Errors are displayed directly from Sysmon output when applying configs.
-
----
-
-# 📦 Sysmon Box
-
-Sysmon Box is a lightweight utility to build a database of captured Sysmon and network traffic.
-
-![Sysmon Box](Assets/Images/SysmonView/10.png "Sysmon Box")
-
-### Example Usage
-
-Run Sysmon Box (requires Sysmon + tshark installed and running):
+### Development
 
 ```bash
-SysmonBox -in Wi-Fi
+git clone https://github.com/nshalabi/SysmonTools.git
+cd SysmonTools/SysmonView
+npm install
+npm run dev
 ```
 
-Workflow:
+### Production Build
 
-1. Captures traffic using `tshark` on the selected interface.
-2. On stop (`CTRL+C`), dumps packets and exports Sysmon logs for the session.
-3. Builds/updates a SysmonViewDB database combining Sysmon logs and traffic.
-4. Open the DB with Sysmon View for correlation.
-
----
-
-# 📚 Additional Resources
-
-- [Sysmon: The Big Brother of Windows and the Super SysmonView](https://www.fwhibbit.es/sysmon-the-big-brother-of-windows-and-the-super-sysmonview)
-
----
-
-# 📬 # Support and addtional Features
-
-For any customizations or business collaboration inquiries, please visit [applyingcode.com](http://www.applyingcode.com).
-For issues or feature requests, please file a GitHub issue.  
-Alternatively, email: **nader_shalabi@hotmail.com**
-
----
-
-# ⚖️ License
-
-```text
-Copyright Nader Shallabi. All rights reserved.
-
-SYSMON TOOLS CAN BE COPIED AND/OR DISTRIBUTED WITHOUT ANY EXPRESS PERMISSION OF NADER SHALLABI.
-
-THIS SOFTWARE IS PROVIDED BY NADER SHALLABI "AS IS" AND ANY EXPRESS OR IMPLIED
-WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL NADER SHALLABI
-OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
-OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
-AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-The views and conclusions contained in the software and documentation are those of the authors and
-should not be interpreted as representing official policies, either expressed or implied, of Nader Shallabi.
+```bash
+cd SysmonTools/SysmonView
+npm install
+npm run build
 ```
+
+The installer and portable executable will be generated in the `SysmonView/release/` directory.
+
+---
+
+## Legacy Tools
+
+Previous versions of Sysmon Tools are archived in the [`Legacy/`](Legacy/) directory:
+
+- **Sysmon View v3.1** — the original desktop application
+- **Sysmon Shell** — GUI configuration editor for Sysmon XML configs
+- **Sysmon Box** — command-line utility to capture and correlate Sysmon + network events
+
+These tools are provided as-is for reference. New versions may be added to this repository as they are rewritten.
+
+---
+
+## Third-Party Libraries
+
+Sysmon View is built with open-source libraries including React, Electron, React Flow, TanStack Table, Leaflet, sql.js, and others. See [THIRD_PARTY_NOTICES.md](SysmonView/THIRD_PARTY_NOTICES.md) for the full list with license details.
+
+---
+
+## Support the Project
+
+If you find Sysmon Tools useful in your work, consider supporting its continued development:
+
+- [GitHub Sponsors](https://github.com/sponsors/nshalabi)
+
+Your support helps keep the project maintained, open source, and free for the community.
+
+---
+
+## License
+
+This project is licensed under the [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html).
+
+---
+
+## Contact
+
+- GitHub: [github.com/nshalabi/SysmonTools](https://github.com/nshalabi/SysmonTools)
+- X (Twitter): [x.com/nader_shalabi](https://x.com/nader_shalabi)
+- LinkedIn: [linkedin.com/in/nadershalabi](https://www.linkedin.com/in/nadershalabi)
+
+For issues or feature requests, please [open an issue](https://github.com/nshalabi/SysmonTools/issues).
