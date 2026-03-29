@@ -56,7 +56,6 @@ Summarizes run sessions per process GUID and shows correlated events in an inter
 - **Session threshold** — sessions with over 2,000 events redirect to All Events for performance
 
 ![Process View](Assets/Images/SysmonView/2.png "Process View - Session Diagram")
-![Process View](Assets/Images/SysmonView/3.png "Process View - Event Details")
 
 ### Map View
 
