@@ -177,7 +177,6 @@ This project is licensed under the [GNU General Public License v3.0](https://www
 
 ## Contact
 
-- GitHub: [github.com/nshalabi/SysmonTools](https://github.com/nshalabi/SysmonTools)
 - X (Twitter): [x.com/nader_shalabi](https://x.com/nader_shalabi)
 - LinkedIn: [linkedin.com/in/nadershalabi](https://www.linkedin.com/in/nadershalabi)
 
