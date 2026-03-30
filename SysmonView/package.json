@@ -1,6 +1,6 @@
 {
   "name": "sysmon-view",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Sysmon View - Visualize and enrich Windows Sysmon event logs",
   "main": "dist-electron/main.js",
   "author": "Nader Shalabi",
@@ -8,7 +8,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && electron-builder --win --publish never",
+    "build": "vite build && electron-builder --publish never",
     "preview": "vite preview",
     "electron:dev": "vite build && electron ."
   },
@@ -50,6 +50,30 @@
     },
     "portable": {
       "artifactName": "SysmonView-${version}-portable.exe"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["x64", "arm64"]
+        }
+      ],
+      "category": "public.app-category.utilities",
+      "artifactName": "SysmonView-${version}-mac-${arch}.${ext}"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": ["x64"]
+        },
+        {
+          "target": "tar.gz",
+          "arch": ["x64"]
+        }
+      ],
+      "category": "Utility",
+      "artifactName": "SysmonView-${version}-linux-${arch}.${ext}"
     }
   },
   "dependencies": {
