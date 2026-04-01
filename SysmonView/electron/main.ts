@@ -14,12 +14,17 @@ let mainWindow: BrowserWindow | null = null;
 let db: Database | null = null;
 
 function createWindow() {
+  const iconPath = app.isPackaged
+    ? path.join(process.resourcesPath, 'icon.png')
+    : path.join(__dirname, '../build/icon.png');
+
   mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
     minWidth: 1024,
     minHeight: 600,
     title: 'Sysmon View',
+    icon: iconPath,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,

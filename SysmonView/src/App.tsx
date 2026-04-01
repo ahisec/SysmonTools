@@ -4,6 +4,7 @@ import StatusBar from './components/StatusBar';
 import ProcessView from './pages/ProcessView';
 import AllEventsView from './pages/AllEventsView';
 import MapView from './pages/MapView';
+import HierarchyView from './pages/HierarchyView';
 import PreferencesDialog from './components/PreferencesDialog';
 import AboutDialog from './components/AboutDialog';
 import DocumentationDialog from './components/DocumentationDialog';
@@ -22,10 +23,11 @@ import DocumentationDialog from './components/DocumentationDialog';
  *   - "All Events"    (TabSheetAllEvents)
  */
 
-type TabId = 'process' | 'map' | 'events';
+type TabId = 'process' | 'hierarchy' | 'map' | 'events';
 
 const TABS: { id: TabId; label: string }[] = [
   { id: 'process', label: 'Process View' },
+  { id: 'hierarchy', label: 'Hierarchy View' },
   { id: 'map', label: 'Map View' },
   { id: 'events', label: 'All Events' },
 ];
@@ -88,6 +90,7 @@ export default function App() {
       {/* Content area */}
       <div className="flex-1 overflow-hidden" key={refreshKey}>
         {activeTab === 'process' && <ProcessView />}
+        {activeTab === 'hierarchy' && <HierarchyView />}
         {activeTab === 'map' && <MapView />}
         {activeTab === 'events' && <AllEventsView />}
       </div>

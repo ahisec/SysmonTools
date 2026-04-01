@@ -1,6 +1,6 @@
 {
   "name": "sysmon-view",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Sysmon View - Visualize and enrich Windows Sysmon event logs",
   "main": "dist-electron/main.js",
   "author": "Nader Shalabi",
@@ -28,8 +28,13 @@
       {
         "from": "node_modules/sql.js/dist/sql-wasm.wasm",
         "to": "sql-wasm.wasm"
+      },
+      {
+        "from": "build/icon.png",
+        "to": "icon.png"
       }
     ],
+    "icon": "build/icon",
     "win": {
       "target": [
         {
