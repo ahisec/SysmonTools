@@ -300,10 +300,10 @@ function SessionDiagramInner({
         const isPinned = pinnedGids.has(evt.GID);
         const isCollapsed = collapsedGids.has(evt.GID);
         const hiddenCount = hiddenCounts.get(evt.GID) ?? 0;
-        const hasChildren = i < events.length - 1; // not the last visible node
+        const hasChildren = i < events.length - 1 || (isCollapsed && hiddenCount > 0);
 
         let details = evt.EventDetails || evt.EventTypeName;
-        if (details.length > 80) details = details.substring(0, 77) + '...';
+        if (details.length > 120) details = details.substring(0, 117) + '...';
 
         const timeStr = evt.UtcTime || '';
         const pinMarker = isPinned ? ' \u{1F4CC}' : '';

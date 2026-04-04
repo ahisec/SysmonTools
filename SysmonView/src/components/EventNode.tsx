@@ -32,6 +32,7 @@ function EventNode({ data }: NodeProps) {
 
   return (
     <div
+      title={label}
       style={{
         background: bgColor,
         color: '#fff',
@@ -41,6 +42,8 @@ function EventNode({ data }: NodeProps) {
         border: isPinned ? '3px solid #facc15' : 'none',
         padding: '8px 12px',
         whiteSpace: 'pre-line',
+        wordBreak: 'break-all',
+        overflow: 'hidden',
         lineHeight: '1.4',
         cursor: 'pointer',
         textShadow: '0 1px 2px rgba(0,0,0,0.3)',
